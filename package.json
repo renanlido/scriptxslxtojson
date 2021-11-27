@@ -1,5 +1,5 @@
 {
-  "name": "scriptxmltojson",
+  "name": "scriptxlsxtojson",
   "version": "1.0.0",
   "main": "dist/app.js",
   "author": {
