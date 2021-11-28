@@ -1,12 +1,22 @@
 import { readFile, utils } from 'xlsx';
 import { writeFileSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+import lodash from 'lodash';
 
 const readFileXSLX = readFile(`${__dirname}/data/arquivo.xlsx` );
 const sheetFile = readFileXSLX.Sheets['ESTRUTURA_BR']
 
 const dataConvertedInJson = utils.sheet_to_json(sheetFile);
 
+const widthPosition = () => {
+  const x = lodash.random(-24, 24);
+  return x;
+};
+
+let position = false;
+
 const jsonFormatedData = dataConvertedInJson.map((data: any) => {
+  position = !position;
 
   const dimensions = 
   [data.dimension_1,data.dimension_2,data.dimension_3,data.dimension_4,data.dimension_5]
@@ -16,6 +26,8 @@ const jsonFormatedData = dataConvertedInJson.map((data: any) => {
   [data.subCategory_1,data.subCategory_2,data.subCategory_3,data.subCategory_4,data.subCategory_5]
   .filter((i) => i);
   ;
+
+// CRIAR FUNÇÃO PARA DEFINIR CADA COR
 
   let numberMonth = 0;
 
@@ -94,15 +106,15 @@ const jsonFormatedData = dataConvertedInJson.map((data: any) => {
   }
   
   const json = {
-    id: 0,
-    position: false,
-    widthMovimentation: 0,
+    id: uuidv4(),
+    position: position,
+    widthMovimentation: widthPosition(),
     date: {
       day: data.day,
       month: numberMonth,
       year: data.year
     },
-    color: null,
+    color: null, // verificar cada cor
     qualification: qualification,
     country: data.country,
     dimensions: dimensions,
