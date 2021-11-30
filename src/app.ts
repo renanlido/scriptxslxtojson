@@ -3,10 +3,11 @@ import { writeFileSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import lodash from 'lodash';
 
-const readFileXSLX = readFile(`${__dirname}/data/arquivo.xlsx` );
+const readFileXSLX = readFile(`${__dirname}/data/brasil.xlsx` );
 const sheetFile = readFileXSLX.Sheets['ESTRUTURA_BR']
 
 const dataConvertedInJson = utils.sheet_to_json(sheetFile);
+
 
 const widthPosition = () => {
   const x = lodash.random(-24, 24);
@@ -22,10 +23,24 @@ const jsonFormatedData = dataConvertedInJson.map((data: any) => {
   [data.dimension_1,data.dimension_2,data.dimension_3,data.dimension_4,data.dimension_5]
   .filter((i) => i);
 
-  const subcategories = 
-  [data.subCategory_1,data.subCategory_2,data.subCategory_3,data.subCategory_4,data.subCategory_5]
-  .filter((i) => i);
-  ;
+  let subcategories = [];
+
+  if(data.categoryName === "Regulação"){
+    subcategories.push(data.categoryRegulation_1,data.categoryRegulation_2,data.categoryRegulation_3,
+      data.categoryRegulation_4,data.categoryRegulation_5);
+    
+  };
+
+  if(data.categoryName === "Instituição"){
+    subcategories.push(data.categoryInstituition_1,data.categoryInstituition_2,data.categoryInstituition_3
+      ,data.categoryInstituition_4,data.categoryInstituition_5);
+    
+  };
+
+  if(data.categoryName === "Participação"){
+    subcategories.push(data.categoryParticipation_1,data.categoryParticipation_2,
+    data.categoryParticipation_3,data.categoryParticipation_4,data.categoryParticipation_5)
+  };
 
 // CRIAR FUNÇÃO PARA DEFINIR CADA COR
 
@@ -97,7 +112,7 @@ const jsonFormatedData = dataConvertedInJson.map((data: any) => {
       qualification = 'negative'
       break;
 
-  case qualificationString === 'basline':
+  case qualificationString === 'baseline':
       qualification = 'baseline'
       break;      
 
@@ -117,11 +132,12 @@ const jsonFormatedData = dataConvertedInJson.map((data: any) => {
     color: null, // verificar cada cor
     qualification: qualification,
     country: data.country,
+    flag: null,// inserir icone da bandeira do país
     dimensions: dimensions,
     category: {
-      name: data.categoryName,
-      icon: data.categoryIcon,
-      subcategories: subcategories
+      name: data.categoryName === undefined || data.categoryName === '' || data.categoryName === null ? null : data.categoryName,
+      icon: null, //setar icone
+      subcategories: subcategories.filter((i: any) => i)
     },
     legalFramework: {
       legalInstrument: data.legalInstrument,
